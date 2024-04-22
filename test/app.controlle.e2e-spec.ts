@@ -6,6 +6,7 @@ import { buildDefaultAppConfig } from '@src/utils/app/app-config';
 
 describe('/', () => {
   let app: INestApplication;
+  const BASE_URL = '/api/v1';
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -16,15 +17,15 @@ describe('/', () => {
   });
   describe('/GET', () => {
     it('should return NotFound Exception', () => {
-      return request(app.getHttpServer()).get('/').expect(404).expect({
-        message: 'Cannot GET /',
+      return request(app.getHttpServer()).get(BASE_URL).expect(404).expect({
+        message: 'Cannot GET /api/v1',
         error: 'Not Found',
         status_code: 404,
       });
     });
     it('should return default message', () => {
       return request(app.getHttpServer())
-        .get('/hello-world')
+        .get(`${BASE_URL}/hello-world`)
         .expect(200)
         .expect({
           hello_world: 'Hello World!',
@@ -34,7 +35,7 @@ describe('/', () => {
   describe('/POST', () => {
     it('should return a empty object when receive camelCase object', () => {
       return request(app.getHttpServer())
-        .post('/body')
+        .post(`${BASE_URL}/body`)
         .send({
           anyMessage: 'essa é a mensagem',
         })
@@ -46,7 +47,7 @@ describe('/', () => {
         any_message: 'essa é a mensagem',
       };
       return request(app.getHttpServer())
-        .post('/body')
+        .post(`${BASE_URL}/body`)
         .send(testObject)
         .expect(200)
         .expect(testObject);
